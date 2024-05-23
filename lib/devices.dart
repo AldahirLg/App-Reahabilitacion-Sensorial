@@ -23,8 +23,8 @@ class Device {
 }
 
 final _names = [
-  'Tubo de Burbujas uno',
-  'Proyector de Luz uno',
-  'Tubo de Burbujas Dos',
-  'Proyector de Luz dos',
+  'No disponible 3',
+  'No disponible 2',
+  'No disponible 1',
+  'Tubo de Burbujas',
 ];
