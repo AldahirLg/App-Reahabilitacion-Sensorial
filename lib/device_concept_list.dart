@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:devices_reah/device_concept_deatils.dart';
 import 'package:devices_reah/devices.dart';
+import 'package:devices_reah/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -132,14 +133,19 @@ class _DeviceConceptListState extends State<DeviceConceptList> {
                   print(result);
                   return GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(PageRouteBuilder(
-                          transitionDuration: const Duration(milliseconds: 650),
-                          pageBuilder: (context, animation, _) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: DeviceConceptDetails(device: device),
-                            );
-                          }));
+                      if (result == 0) {
+                        sendRequest('');
+                        Navigator.of(context).push(PageRouteBuilder(
+                            transitionDuration:
+                                const Duration(milliseconds: 650),
+                            pageBuilder: (context, animation, _) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: DeviceConceptDetails(device: device),
+                              );
+                            }));
+                      }
+                      ;
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 90),

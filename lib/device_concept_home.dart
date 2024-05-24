@@ -3,9 +3,14 @@ import 'package:devices_reah/devices.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class DeviceConceptHome extends StatelessWidget {
+class DeviceConceptHome extends StatefulWidget {
   const DeviceConceptHome({super.key});
 
+  @override
+  State<DeviceConceptHome> createState() => _DeviceConceptHomeState();
+}
+
+class _DeviceConceptHomeState extends State<DeviceConceptHome> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -33,16 +38,34 @@ class DeviceConceptHome extends StatelessWidget {
                           end: Alignment.bottomCenter,
                           colors: [
                     Color(0xFFFFFFFF),
-                    Color.fromARGB(255, 166, 223, 247)
+                    Color.fromARGB(255, 254, 254, 254)
                   ]))),
             ),
             Positioned(
-                height: size.height * 0.19,
-                left: 0,
-                right: 0,
-                top: size.height * 0.30,
-                child: Hero(
-                    tag: '2', child: Image.asset('assets/images/Logo.png'))),
+              height: size.height * 0.15,
+              left: 0,
+              right: 0,
+              top: size.height * 0.20,
+              child:
+                  Hero(tag: '2', child: Image.asset('assets/images/Logo.png')),
+            ),
+            const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Desliza hacia arriba',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            )
           ],
         ),
       ),
