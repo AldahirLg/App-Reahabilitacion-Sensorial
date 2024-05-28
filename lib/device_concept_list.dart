@@ -134,18 +134,19 @@ class _DeviceConceptListState extends State<DeviceConceptList> {
                   return GestureDetector(
                     onTap: () {
                       if (result == 0) {
-                        sendRequest('');
-                        Navigator.of(context).push(PageRouteBuilder(
-                            transitionDuration:
-                                const Duration(milliseconds: 650),
-                            pageBuilder: (context, animation, _) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: DeviceConceptDetails(device: device),
-                              );
-                            }));
+                        if (index == devices.length) {
+                          startPolling();
+                          Navigator.of(context).push(PageRouteBuilder(
+                              transitionDuration:
+                                  const Duration(milliseconds: 650),
+                              pageBuilder: (context, animation, _) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: DeviceConceptDetails(device: device),
+                                );
+                              }));
+                        }
                       }
-                      ;
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 90),

@@ -32,7 +32,11 @@ class _DeviceConceptDetailsState extends State<DeviceConceptDetails> {
         shadowColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0.0,
-        leading: const BackButton(
+        leading: BackButton(
+          onPressed: () {
+            Navigator.pop(context);
+            stopPolling();
+          },
           color: Colors.black,
         ),
       ),
