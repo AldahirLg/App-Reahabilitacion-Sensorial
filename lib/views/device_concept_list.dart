@@ -1,10 +1,10 @@
-import 'dart:ui';
-
-import 'package:devices_reah/device_concept_deatils.dart';
-import 'package:devices_reah/devices.dart';
-import 'package:devices_reah/services.dart';
+import 'package:devices_reah/views/device_concept_cubo.dart';
+import 'package:devices_reah/views/device_concept_deatils.dart';
+import 'package:devices_reah/views/device_concept_home.dart';
+import 'package:devices_reah/views/devices.dart';
+import 'package:devices_reah/services/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 const _duration = Duration(milliseconds: 300);
 const _initialPage = 3.0;
@@ -57,6 +57,18 @@ class _DeviceConceptListState extends State<DeviceConceptList> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         scrolledUnderElevation: 0.0,
+        leading: BackButton(
+          onPressed: () {
+            Navigator.of(context).push(PageRouteBuilder(
+                transitionDuration: const Duration(milliseconds: 650),
+                pageBuilder: (context, animation, _) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: const DeviceConceptHome(),
+                  );
+                }));
+          },
+        ),
       ),
       body: Stack(
         children: [
@@ -130,12 +142,14 @@ class _DeviceConceptListState extends State<DeviceConceptList> {
                   final result = _currentPage - index + 1;
                   final value = -0.4 * result + 1.2;
                   final opacity = value.clamp(0.0, 1.0);
-                  print(result);
+                  if (kDebugMode) {
+                    print(result);
+                  }
                   return GestureDetector(
                     onTap: () {
                       if (result == 0) {
-                        if (index == devices.length) {
-                          startPolling();
+                        //sendRequest('');
+                        if (index == 4) {
                           Navigator.of(context).push(PageRouteBuilder(
                               transitionDuration:
                                   const Duration(milliseconds: 650),
@@ -143,6 +157,17 @@ class _DeviceConceptListState extends State<DeviceConceptList> {
                                 return FadeTransition(
                                   opacity: animation,
                                   child: DeviceConceptDetails(device: device),
+                                );
+                              }));
+                        }
+                        if (index == 3) {
+                          Navigator.of(context).push(PageRouteBuilder(
+                              transitionDuration:
+                                  const Duration(milliseconds: 650),
+                              pageBuilder: (context, animation, _) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: DeviceConceptCubo(device: device),
                                 );
                               }));
                         }

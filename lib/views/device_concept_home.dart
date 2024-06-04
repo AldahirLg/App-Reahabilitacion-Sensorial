@@ -1,7 +1,5 @@
-import 'package:devices_reah/device_concept_list.dart';
-import 'package:devices_reah/devices.dart';
+import 'package:devices_reah/views/device_concept_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class DeviceConceptHome extends StatefulWidget {
   const DeviceConceptHome({super.key});
@@ -17,7 +15,16 @@ class _DeviceConceptHomeState extends State<DeviceConceptHome> {
     return Scaffold(
       body: GestureDetector(
         onVerticalDragUpdate: (details) {
-          if (details.primaryDelta! < -20) {
+          if (details.primaryDelta! < -12) {
+            Navigator.of(context).push(PageRouteBuilder(
+                transitionDuration: const Duration(milliseconds: 650),
+                pageBuilder: (context, animation, _) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: const DeviceConceptList(),
+                  );
+                }));
+          } else if (details.primaryDelta! < 12) {
             Navigator.of(context).push(PageRouteBuilder(
                 transitionDuration: const Duration(milliseconds: 650),
                 pageBuilder: (context, animation, _) {
@@ -30,6 +37,12 @@ class _DeviceConceptHomeState extends State<DeviceConceptHome> {
         },
         child: Stack(
           children: [
+            SizedBox.expand(
+              child: Image.asset(
+                'assets/images/Home.jpg',
+                fit: BoxFit.cover,
+              ),
+            ),
             const SizedBox.expand(
               child: DecoratedBox(
                   decoration: BoxDecoration(
@@ -38,7 +51,7 @@ class _DeviceConceptHomeState extends State<DeviceConceptHome> {
                           end: Alignment.bottomCenter,
                           colors: [
                     Color(0xFFFFFFFF),
-                    Color.fromARGB(255, 254, 254, 254)
+                    Color.fromARGB(255, 255, 255, 255)
                   ]))),
             ),
             Positioned(
@@ -56,7 +69,7 @@ class _DeviceConceptHomeState extends State<DeviceConceptHome> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Desliza hacia arriba',
+                      'Deslizar',
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 20,

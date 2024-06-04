@@ -1,11 +1,12 @@
-import 'dart:ffi';
-import 'dart:typed_data';
+import 'dart:convert';
 
-import 'package:devices_reah/devices.dart';
-import 'package:devices_reah/services.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:devices_reah/services/socket.dart';
+import 'package:devices_reah/views/device_concept_list.dart';
+import 'package:devices_reah/views/devices.dart';
+import 'package:devices_reah/services/services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/rendering.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 int gradiantColors = 0;
 
@@ -21,6 +22,61 @@ class DeviceConceptDetails extends StatefulWidget {
 class _DeviceConceptDetailsState extends State<DeviceConceptDetails> {
   bool isSwitchLight = false;
   bool isSwitchBubble = false;
+  late String colorSok;
+
+  late WebSocketChannel channel;
+
+  @override
+  void initState() {
+    super.initState();
+    _connectToWebSocket();
+  }
+
+  void _connectToWebSocket() async {
+    channel = WebSocketChannel.connect(Uri.parse(espurl));
+    try {
+      await channel.ready;
+      channel.stream.listen(
+        (message) {
+          _ListenToWebSocket(message);
+        },
+        onDone: () {
+          print('Closed');
+        },
+        onError: (error) {
+          print('Error: $error');
+        },
+      );
+    } catch (e) {
+      print('WS no conectado');
+    }
+  }
+
+  void _ListenToWebSocket(String message) {
+    channel.stream.listen((message) {
+      var parsedMessage = jsonDecode(message);
+      print(message);
+      setState(() {
+        isSwitchBubble = parsedMessage['relay_state'];
+        isSwitchLight = parsedMessage['neopixel_state'];
+        colorSok = parsedMessage['color'];
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _closeWSChannel();
+    super.dispose();
+  }
+
+  void _closeWSChannel() {
+    if (channel != null) {
+      print('Closing WebSocket');
+      channel.sink.close();
+      print('WebSocket closed');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +90,17 @@ class _DeviceConceptDetailsState extends State<DeviceConceptDetails> {
         scrolledUnderElevation: 0.0,
         leading: BackButton(
           onPressed: () {
-            Navigator.pop(context);
-            stopPolling();
+            _closeWSChannel();
+            Navigator.of(context).push(PageRouteBuilder(
+                transitionDuration: const Duration(milliseconds: 650),
+                pageBuilder: (context, animation, _) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: const DeviceConceptList(),
+                  );
+                }));
+            //closeChannel();
+            //stopPolling();
           },
           color: Colors.black,
         ),
@@ -101,21 +166,23 @@ class _DeviceConceptDetailsState extends State<DeviceConceptDetails> {
         Transform.scale(
           scale: 1.2,
           child: Switch(
-            value: isSwitchLight,
-            onChanged: (value) {
-              if (value == true) {
-                print('On');
-                sendRequest('neopixel_on');
-              } else {
-                gradiantColors = 6;
-                print('off');
-                sendRequest('neopixel_off');
-              }
-              setState(() {
-                isSwitchLight = value;
-              });
-            },
-          ),
+              value: isSwitchLight,
+              onChanged: (value) {
+                if (value == true) {
+                  print('Neo_On');
+
+                  sendRequest('neopixel_on');
+                } else {
+                  print('Neo_off');
+
+                  gradiantColors = 6;
+                  sendRequest('neopixel_off');
+                }
+                setState(() {
+                  isSwitchLight = value;
+                });
+                //_sendMessage(jsonEncode({'type': 'neopixel', 'state': value}));
+              }),
         ),
         const Text(
           'Activar Burbujas',
@@ -128,20 +195,22 @@ class _DeviceConceptDetailsState extends State<DeviceConceptDetails> {
         Transform.scale(
           scale: 1.2,
           child: Switch(
-            value: isSwitchBubble,
-            onChanged: (value) {
-              if (value == true) {
-                print('On');
-                sendRequest('relay_on');
-              } else {
-                print('off');
-                sendRequest('relay_off');
-              }
-              setState(() {
-                isSwitchBubble = value;
-              });
-            },
-          ),
+              value: isSwitchBubble,
+              onChanged: (value) {
+                if (value == true) {
+                  print('On');
+
+                  sendRequest('relay_on');
+                } else {
+                  print('off');
+
+                  sendRequest('relay_off');
+                }
+                setState(() {
+                  isSwitchBubble = value;
+                });
+                // _sendMessage(jsonEncode({'type': 'relay', 'state': value}));
+              }),
         )
       ],
     );
@@ -245,19 +314,19 @@ class _DeviceConceptDetailsState extends State<DeviceConceptDetails> {
     Color color;
     switch (gradiantColors) {
       case 1:
-        color = Colors.red;
+        color = const Color.fromARGB(255, 255, 214, 213);
         break;
       case 2:
-        color = Colors.blue;
+        color = const Color.fromARGB(255, 229, 242, 255);
         break;
       case 3:
-        color = Colors.green;
+        color = const Color.fromARGB(255, 233, 255, 223);
         break;
       case 4:
-        color = Colors.yellow;
+        color = const Color.fromARGB(255, 255, 249, 197);
         break;
       case 5:
-        color = Colors.pink;
+        color = const Color.fromARGB(255, 255, 215, 236);
         break;
       case 6:
         color = Colors.white;

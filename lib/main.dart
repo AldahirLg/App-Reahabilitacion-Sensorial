@@ -1,5 +1,4 @@
-import 'package:devices_reah/device_concept_home.dart';
-import 'package:devices_reah/device_concept_list.dart';
+import 'package:devices_reah/views/device_concept_home.dart';
 import 'package:flutter/material.dart';
 
 void main() {
